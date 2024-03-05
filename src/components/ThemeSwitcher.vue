@@ -9,7 +9,7 @@ const $sun = ref(
 );
 function $soundEffect() {
     let $audioObj = new Audio();
-    $audioObj.src = "/sounds/mixkit-on-or-off-light-switch-tap-2585.wav";
+    $audioObj.src = "/mixkit-on-or-off-light-switch-tap-2585.wav";
     $audioObj.play();
 }
 function $switch() {
