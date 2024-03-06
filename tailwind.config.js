@@ -28,6 +28,10 @@ export default {
                 "DarkTh-Very-Dark-Grayish-Blue": "hsl(233, 14%, 35%)",
                 "DarkTh-Very-Dark-Grayish-Blue": "hsl(237, 14%, 26%)",
             },
+            backgroundImage: {
+                "main-gradient":
+                    "linear-gradient(315deg, hsl(192, 100%, 67%), hsl(280, 87%, 65%));",
+            },
         },
     },
     plugins: [],
