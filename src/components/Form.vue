@@ -1,6 +1,6 @@
 <script setup>
 import {ref} from "vue";
-import { $mainTodosArr} from "@/store/store";
+import {$mainTodosArr} from "@/store/store";
 const $todoTitle = ref("");
 function $addtodo() {
     if ($todoTitle.value == "") {

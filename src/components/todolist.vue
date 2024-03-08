@@ -3,7 +3,7 @@ import {$mainTodosArr} from "@/store/store";
 import {ref} from "vue";
 const $currentTab = ref(1);
 const $currentRendering = ref("all");
-
+const $length = ref(0);
 function $clearComp() {
     $mainTodosArr.value = $mainTodosArr.value.filter((el) => el.done === false);
 }
@@ -19,9 +19,9 @@ function $clearComp() {
                 return $currentRendering == 'all'
                     ? el
                     : $currentRendering == 'active'
-                    ? el.done === false
+                    ? el.done == false
                     : $currentRendering == 'completed'
-                    ? el.done === true
+                    ? el.done == true
                     : '';
             })"
             :key="$index"
@@ -101,7 +101,18 @@ function $clearComp() {
             class="p-5 text-LightTh-Dark-Grayish-Blue dark:text-DarkTh--Grayish-Blue flex items-center justify-between"
         >
             <span aria-label="todos number">
-                {{ $mainTodosArr.length }} items left</span
+                {{
+                    $mainTodosArr.filter((el) => {
+                        return $currentRendering == "all"
+                            ? el
+                            : $currentRendering == "active"
+                            ? el.done == false
+                            : $currentRendering == "completed"
+                            ? el.done == true
+                            : "";
+                    }).length
+                }}
+                items left</span
             >
             <ul
                 role="list"
