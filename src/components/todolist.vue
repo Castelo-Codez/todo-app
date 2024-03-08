@@ -1,14 +1,43 @@
 <script setup>
-import $todos from "@/store/store";
+import $appendToLocalStorge from "@/helpers/AppendToLocalStorge";
+import {$mainTodosArr} from "@/store/store";
+import {ref} from "vue";
+
+const $currentTab = ref(1);
+function $reinventory() {
+    $mainTodosArr.value = window.localStorage.getItem("todos")
+        ? JSON.parse(window.localStorage.getItem("todos"))
+        : [];
+}
+
+function $getAllTodos() {
+    $reinventory();
+    $currentTab.value = 1;
+    $mainTodosArr.value = $mainTodosArr.value.filter((el) => el);
+}
+function $getActiveTodos() {
+    $reinventory();
+    $currentTab.value = 2;
+    $mainTodosArr.value = $mainTodosArr.value.filter((el) => el.done === false);
+}
+function $getCompletedTodos() {
+    $reinventory();
+    $currentTab.value = 3;
+    $mainTodosArr.value = $mainTodosArr.value.filter((el) => el.done === true);
+}
+function $clearCompleted() {
+    $mainTodosArr.value = $mainTodosArr.value.filter((el) => el.done === false);
+    $appendToLocalStorge($mainTodosArr.value);
+}
 </script>
 <template>
     <ul
-        class="mt-5 w-full bg-LightTh-Very-Light-Gray dark:bg-DarkTh-Very-Dark-Desaturated-Blue rounded-t-md"
+        class="mt-5 relative w-full bg-LightTh-Very-Light-Gray dark:bg-DarkTh-Very-Dark-Desaturated-Blue rounded-t-md rounded-b-md"
         aria-label="todos list"
         role="list"
     >
         <li
-            v-for="($todo, $index) in $todos"
+            v-for="($todo, $index) in $mainTodosArr"
             :key="$index"
             role="listitem"
             :aria-label="$todo.title"
@@ -20,7 +49,10 @@ import $todos from "@/store/store";
                     aria-hidden="true"
                     :id="'chceckbox-' + $index"
                     class="hidden"
-                    @change="$todo.done = !$todo.done"
+                    @change="
+                        $todo.done = !$todo.done;
+                        $appendToLocalStorge($mainTodosArr);
+                    "
                 />
                 <label
                     :for="'chceckbox-' + $index"
@@ -50,7 +82,7 @@ import $todos from "@/store/store";
             </div>
             <span
                 aria-label="todo title"
-                class="text-DarkTh-Very-Dark-Blue text-[1.3rem] capitalize font-[400] dark:text-DarkTh-Grayish-Blue"
+                class="text-DarkTh-Very-Dark-Blue capitalize font-[400] dark:text-DarkTh-Grayish-Blue grid place-content-center"
                 :class="[
                     $todo.done
                         ? ' text-LightTh-Light-Grayish-Blue dark:text-DarkTh-Very-Dark-Grayish-Blue line-through'
@@ -64,7 +96,10 @@ import $todos from "@/store/store";
                 type="button"
                 role="button"
                 class="absolute z-50 top-2/4 -translate-y-2/4 right-5 lg:opacity-0 lg:group-hover:opacity-100 transition duration-150"
-                @click="$todos.splice($index, 1)"
+                @click="
+                    $mainTodosArr.splice($index, 1);
+                    $appendToLocalStorge($mainTodosArr);
+                "
             >
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -80,5 +115,76 @@ import $todos from "@/store/store";
                 </svg>
             </button>
         </li>
+        <li
+            role="listitem"
+            aria-label="controllers"
+            class="p-5 text-LightTh-Dark-Grayish-Blue dark:text-DarkTh--Grayish-Blue flex items-center justify-between"
+        >
+            <span aria-label="todos number">
+                {{ $mainTodosArr.length }} items left</span
+            >
+            <ul
+                role="list"
+                aria-label="controls data show "
+                class="flex p-5 justify-center gap-x-3 bg-LightTh-Very-Light-Gray dark:bg-DarkTh-Very-Dark-Desaturated-Blue rounded-t-md rounded-b-md w-full absolute bottom-[-5rem] left-0 lg:static lg:p-0 lg:w-fit"
+            >
+                <li aria-label="show All todos">
+                    <button
+                        aria-label="all todos button"
+                        role="button"
+                        type="button"
+                        class="capitalize transition duration-300 hover:text-Primary-BrightBlue"
+                        @click="$getAllTodos"
+                        :class="[
+                            $currentTab === 1 ? ' text-Primary-BrightBlue' : '',
+                        ]"
+                    >
+                        All
+                    </button>
+                </li>
+                <li aria-label="show active todos">
+                    <button
+                        aria-label="active todos button"
+                        role="button"
+                        type="button"
+                        class="capitalize transition duration-300 hover:text-Primary-BrightBlue"
+                        @click="$getActiveTodos"
+                        :class="[
+                            $currentTab === 2 ? ' text-Primary-BrightBlue' : '',
+                        ]"
+                    >
+                        active
+                    </button>
+                </li>
+                <li aria-label="show completed todos">
+                    <button
+                        aria-label="completed todos button"
+                        role="button"
+                        type="button"
+                        class="capitalize transition duration-300 hover:text-Primary-BrightBlue"
+                        @click="$getCompletedTodos"
+                        :class="[
+                            $currentTab === 3 ? ' text-Primary-BrightBlue' : '',
+                        ]"
+                    >
+                        completed
+                    </button>
+                </li>
+            </ul>
+            <button
+                aria-label="clear completed todos"
+                type="button"
+                role="button"
+                class="capitalize transition duration-300 hover:text-Primary-BrightBlue"
+                @click="$clearCompleted"
+            >
+                clear completed
+            </button>
+        </li>
     </ul>
+    <h2
+        class="mt-4 relative top-[5rem] lg:static lg:top-0 capitalize text-[0.8rem] text-center text-DarkTh--Grayish-Blue"
+    >
+        drag and drop to renderd list
+    </h2>
 </template>

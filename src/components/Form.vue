@@ -1,18 +1,19 @@
 <script setup>
 import {ref} from "vue";
-import $todos from "../store/store.js";
+import {$mainTodosArr} from "@/store/store";
+import $appendToLocalStorge from "@/helpers/AppendToLocalStorge";
 const $todoTitle = ref("");
-
 function $addtodo() {
     if ($todoTitle.value == "") {
         return;
     } else {
-        const $todo = ref({
+        const $todo = {
             title: $todoTitle.value,
             done: false,
             id: Date.now(),
-        });
-        $todos.value.push($todo.value);
+        };
+        $mainTodosArr.value.push($todo);
+        $appendToLocalStorge($mainTodosArr.value);
         $todoTitle.value = "";
     }
 }

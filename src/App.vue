@@ -2,6 +2,7 @@
 import headerVue from "./components/header.vue";
 import Form from "./components/Form.vue";
 import todolist from "./components/todolist.vue";
+
 </script>
 <template>
     <div aria-hidden="true" class="background">
@@ -32,7 +33,7 @@ import todolist from "./components/todolist.vue";
     </div>
     <div
         aria-label="content"
-        class="w-full md:w-[50%] xl:w-[35%] absolute left-2/4 -translate-x-2/4 top-[50px] lg:top-[100px] px-6"
+        class="w-full md:w-[50%] xl:w-[35%] absolute left-2/4 -translate-x-2/4 top-[50px] lg:top-[120px] px-6"
     >
         <headerVue />
         <main role="main" aria-label="main content">

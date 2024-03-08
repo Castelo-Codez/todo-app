@@ -1,16 +1,11 @@
-import {ref, watch} from "vue";
+import $appendToLocalStorge from "@/helpers/AppendToLocalStorge";
+import {ref} from "vue";
+let $mainTodosArr;
 
-let $todos;
 if (window.localStorage.getItem("todos")) {
-    $todos = ref(JSON.parse(window.localStorage.getItem("todos")));
+    $mainTodosArr = ref(JSON.parse(window.localStorage.getItem("todos")));
 } else {
-    $todos = ref([]);
+    $mainTodosArr = ref([]);
 }
 
-watch($todos.value, (newArr) => {
-    window.localStorage.setItem("todos", JSON.stringify(newArr));
-});
-
-export default $todos;
-
-
+export {$mainTodosArr};
