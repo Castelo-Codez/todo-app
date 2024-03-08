@@ -1,7 +1,6 @@
 <script setup>
 import {ref} from "vue";
-import {$mainTodosArr} from "@/store/store";
-import $appendToLocalStorge from "@/helpers/AppendToLocalStorge";
+import { $mainTodosArr} from "@/store/store";
 const $todoTitle = ref("");
 function $addtodo() {
     if ($todoTitle.value == "") {
@@ -13,7 +12,6 @@ function $addtodo() {
             id: Date.now(),
         };
         $mainTodosArr.value.push($todo);
-        $appendToLocalStorge($mainTodosArr.value);
         $todoTitle.value = "";
     }
 }

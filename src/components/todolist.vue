@@ -1,33 +1,11 @@
 <script setup>
-import $appendToLocalStorge from "@/helpers/AppendToLocalStorge";
 import {$mainTodosArr} from "@/store/store";
 import {ref} from "vue";
-
 const $currentTab = ref(1);
-function $reinventory() {
-    $mainTodosArr.value = window.localStorage.getItem("todos")
-        ? JSON.parse(window.localStorage.getItem("todos"))
-        : [];
-}
+const $currentRendering = ref("all");
 
-function $getAllTodos() {
-    $reinventory();
-    $currentTab.value = 1;
-    $mainTodosArr.value = $mainTodosArr.value.filter((el) => el);
-}
-function $getActiveTodos() {
-    $reinventory();
-    $currentTab.value = 2;
+function $clearComp() {
     $mainTodosArr.value = $mainTodosArr.value.filter((el) => el.done === false);
-}
-function $getCompletedTodos() {
-    $reinventory();
-    $currentTab.value = 3;
-    $mainTodosArr.value = $mainTodosArr.value.filter((el) => el.done === true);
-}
-function $clearCompleted() {
-    $mainTodosArr.value = $mainTodosArr.value.filter((el) => el.done === false);
-    $appendToLocalStorge($mainTodosArr.value);
 }
 </script>
 <template>
@@ -37,7 +15,15 @@ function $clearCompleted() {
         role="list"
     >
         <li
-            v-for="($todo, $index) in $mainTodosArr"
+            v-for="($todo, $index) in $mainTodosArr.filter((el) => {
+                return $currentRendering == 'all'
+                    ? el
+                    : $currentRendering == 'active'
+                    ? el.done === false
+                    : $currentRendering == 'completed'
+                    ? el.done === true
+                    : '';
+            })"
             :key="$index"
             role="listitem"
             :aria-label="$todo.title"
@@ -49,10 +35,7 @@ function $clearCompleted() {
                     aria-hidden="true"
                     :id="'chceckbox-' + $index"
                     class="hidden"
-                    @change="
-                        $todo.done = !$todo.done;
-                        $appendToLocalStorge($mainTodosArr);
-                    "
+                    @change="$todo.done = !$todo.done"
                 />
                 <label
                     :for="'chceckbox-' + $index"
@@ -96,10 +79,7 @@ function $clearCompleted() {
                 type="button"
                 role="button"
                 class="absolute z-50 top-2/4 -translate-y-2/4 right-5 lg:opacity-0 lg:group-hover:opacity-100 transition duration-150"
-                @click="
-                    $mainTodosArr.splice($index, 1);
-                    $appendToLocalStorge($mainTodosArr);
-                "
+                @click="$mainTodosArr.splice($index, 1)"
             >
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -134,7 +114,10 @@ function $clearCompleted() {
                         role="button"
                         type="button"
                         class="capitalize transition duration-300 hover:text-Primary-BrightBlue"
-                        @click="$getAllTodos"
+                        @click="
+                            $currentTab = 1;
+                            $currentRendering = 'all';
+                        "
                         :class="[
                             $currentTab === 1 ? ' text-Primary-BrightBlue' : '',
                         ]"
@@ -148,7 +131,10 @@ function $clearCompleted() {
                         role="button"
                         type="button"
                         class="capitalize transition duration-300 hover:text-Primary-BrightBlue"
-                        @click="$getActiveTodos"
+                        @click="
+                            $currentTab = 2;
+                            $currentRendering = 'active';
+                        "
                         :class="[
                             $currentTab === 2 ? ' text-Primary-BrightBlue' : '',
                         ]"
@@ -162,7 +148,10 @@ function $clearCompleted() {
                         role="button"
                         type="button"
                         class="capitalize transition duration-300 hover:text-Primary-BrightBlue"
-                        @click="$getCompletedTodos"
+                        @click="
+                            $currentTab = 3;
+                            $currentRendering = 'completed';
+                        "
                         :class="[
                             $currentTab === 3 ? ' text-Primary-BrightBlue' : '',
                         ]"
@@ -176,7 +165,7 @@ function $clearCompleted() {
                 type="button"
                 role="button"
                 class="capitalize transition duration-300 hover:text-Primary-BrightBlue"
-                @click="$clearCompleted"
+                @click="$clearComp"
             >
                 clear completed
             </button>
