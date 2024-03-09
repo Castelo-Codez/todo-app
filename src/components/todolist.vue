@@ -1,12 +1,20 @@
 <script setup>
 import {$mainTodosArr} from "@/store/store";
-import {ref} from "vue";
+import {computed, ref, watch} from "vue";
 const $currentTab = ref(1);
 const $currentRendering = ref("all");
-const $length = ref(0);
+
 function $clearComp() {
     $mainTodosArr.value = $mainTodosArr.value.filter((el) => el.done === false);
 }
+
+const $renderingArr = computed(() => {
+    return $mainTodosArr.value.filter((el) => {
+        return $currentRendering.value == "all"
+            ? el
+            : el.done == $currentRendering.value;
+    });
+});
 </script>
 <template>
     <ul
@@ -15,15 +23,7 @@ function $clearComp() {
         role="list"
     >
         <li
-            v-for="($todo, $index) in $mainTodosArr.filter((el) => {
-                return $currentRendering == 'all'
-                    ? el
-                    : $currentRendering == 'active'
-                    ? el.done == false
-                    : $currentRendering == 'completed'
-                    ? el.done == true
-                    : '';
-            })"
+            v-for="($todo, $index) in $renderingArr"
             :key="$index"
             role="listitem"
             :aria-label="$todo.title"
@@ -101,17 +101,7 @@ function $clearComp() {
             class="p-5 text-LightTh-Dark-Grayish-Blue dark:text-DarkTh--Grayish-Blue flex items-center justify-between"
         >
             <span aria-label="todos number">
-                {{
-                    $mainTodosArr.filter((el) => {
-                        return $currentRendering == "all"
-                            ? el
-                            : $currentRendering == "active"
-                            ? el.done == false
-                            : $currentRendering == "completed"
-                            ? el.done == true
-                            : "";
-                    }).length
-                }}
+                {{ $renderingArr.length }}
                 items left</span
             >
             <ul
@@ -144,7 +134,7 @@ function $clearComp() {
                         class="capitalize transition duration-300 hover:text-Primary-BrightBlue"
                         @click="
                             $currentTab = 2;
-                            $currentRendering = 'active';
+                            $currentRendering = false;
                         "
                         :class="[
                             $currentTab === 2 ? ' text-Primary-BrightBlue' : '',
@@ -161,7 +151,7 @@ function $clearComp() {
                         class="capitalize transition duration-300 hover:text-Primary-BrightBlue"
                         @click="
                             $currentTab = 3;
-                            $currentRendering = 'completed';
+                            $currentRendering = true;
                         "
                         :class="[
                             $currentTab === 3 ? ' text-Primary-BrightBlue' : '',
