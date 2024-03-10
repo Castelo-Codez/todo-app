@@ -1,12 +1,14 @@
-import {ref, watch} from "vue";
-let $mainTodosArr;
-if (window.localStorage.getItem("todos")) {
-    $mainTodosArr = ref(JSON.parse(window.localStorage.getItem("todos")));
-} else {
-    $mainTodosArr = ref([]);
-}
-watch($mainTodosArr.value, (newArr) => {
-    window.localStorage.setItem("todos", JSON.stringify(newArr));
+import {reactive, watch} from "vue";
+let $reactiveTodosArr = reactive({
+    todos: [],
 });
+if (window.localStorage.getItem("todos")) {
+    $reactiveTodosArr.todos = JSON.parse(window.localStorage.getItem("todos"));
+} else {
+    $reactiveTodosArr.todos = [];
+}
 
-export {$mainTodosArr};
+watch($reactiveTodosArr, (newObj) => {
+    window.localStorage.setItem("todos", JSON.stringify(newObj.todos));
+});
+export {$reactiveTodosArr};

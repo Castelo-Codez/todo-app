@@ -1,20 +1,19 @@
 <script setup>
-import {$mainTodosArr} from "@/store/store";
-import {computed, ref, watch} from "vue";
+import {$reactiveTodosArr} from "@/store/store";
+import {computed, ref, reactive, watch} from "vue";
 const $currentTab = ref(1);
 const $currentRendering = ref("all");
 
-function $clearComp() {
-    $mainTodosArr.value = $mainTodosArr.value.filter((el) => el.done === false);
-}
-
 const $renderingArr = computed(() => {
-    return $mainTodosArr.value.filter((el) => {
-        return $currentRendering.value == "all"
+    return $reactiveTodosArr.todos.filter((el) => {
+        return $currentRendering.value === "all"
             ? el
             : el.done == $currentRendering.value;
     });
 });
+function $clearComp() {
+    $reactiveTodosArr.todos = $reactiveTodosArr.todos.filter((el) => !el.done);
+}
 </script>
 <template>
     <ul
@@ -24,7 +23,7 @@ const $renderingArr = computed(() => {
     >
         <li
             v-for="($todo, $index) in $renderingArr"
-            :key="$index"
+            :key="$todo.id"
             role="listitem"
             :aria-label="$todo.title"
             class="p-5 border-b group gap-x-6 flex border-b-LightTh-Light-Grayish-Blue dark:border-b-DarkTh-Very-Dark-Grayish-Blue relative"
@@ -79,7 +78,12 @@ const $renderingArr = computed(() => {
                 type="button"
                 role="button"
                 class="absolute z-50 top-2/4 -translate-y-2/4 right-5 lg:opacity-0 lg:group-hover:opacity-100 transition duration-150"
-                @click="$mainTodosArr.splice($index, 1)"
+                @click="
+                    $reactiveTodosArr.todos.splice(
+                        $reactiveTodosArr.todos.indexOf($todo),
+                        1
+                    )
+                "
             >
                 <svg
                     xmlns="http://www.w3.org/2000/svg"

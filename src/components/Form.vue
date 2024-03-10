@@ -1,6 +1,6 @@
 <script setup>
 import {ref} from "vue";
-import {$mainTodosArr} from "@/store/store";
+import {$reactiveTodosArr} from "@/store/store";
 const $todoTitle = ref("");
 function $addtodo() {
     if ($todoTitle.value == "") {
@@ -11,7 +11,7 @@ function $addtodo() {
             done: false,
             id: Date.now(),
         };
-        $mainTodosArr.value.push($todo);
+        $reactiveTodosArr.todos.push($todo);
         $todoTitle.value = "";
     }
 }
